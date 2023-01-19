@@ -1,5 +1,7 @@
 # ju1ius/macaron
 
+[![codecov](https://codecov.io/gh/ju1ius/macaron/branch/main/graph/badge.svg?token=ZggiPVHfWa)](https://codecov.io/gh/ju1ius/macaron)
+
 *«Macaron le Glouton»* is the french name of the Cookie Monster.
 
 `ju1ius/macaron` provides a cookie-aware wrapper for `symfony/http-client`.
@@ -15,7 +17,6 @@ composer require ju1ius/macaron
 ```php
 use ju1ius\Macaron\CookieAwareHttpClient;
 use ju1ius\Macaron\CookieJar;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new CookieAwareHttpClient(HttpClient::create());

@@ -1,14 +1,15 @@
 {
   "name": "ju1ius/macaron",
-  "description": "Cookie aware wrapper for symfony/http-client",
   "type": "library",
+  "license": "MIT",
+  "description": "Cookie aware wrapper for symfony/http-client",
+  "keywords": ["symfony", "http-client", "cookie", "cookie-jar"],
   "authors": [
     {
       "name": "ju1ius",
       "email": "jules.bernable@gmail.com"
     }
   ],
-  "license": "MIT",
   "scripts": {
     "test": "XDEBUG_MODE=off ./tools/phpunit.phar",
     "coverage": "XDEBUG_MODE=coverage ./tools/phpunit.phar --coverage-html=tmp/coverage"
@@ -28,5 +29,8 @@
     "symfony/http-client-contracts": "^3.2",
     "symfony/browser-kit": "^6.2",
     "symfony/http-client": "^6.2"
+  },
+  "require-dev": {
+    "symfony/http-foundation": "^6.2"
   }
 }

@@ -2,8 +2,9 @@
 
 namespace ju1ius\Macaron;
 
-use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\BrowserKit\Cookie as BKCookie;
 use Symfony\Component\BrowserKit\CookieJar as BaseCookieJar;
+use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 
 final class CookieJar extends BaseCookieJar
 {
@@ -15,16 +16,23 @@ final class CookieJar extends BaseCookieJar
 
         $jar = new self();
         foreach ($cookies as $key => $value) {
-            if ($cookie = match (true) {
-                $value instanceof Cookie => $value,
-                \is_scalar($value) => new Cookie($key, (string)$value),
-                default => null,
-            }) {
-                $jar->set($cookie);
+            if (\is_scalar($value)) {
+                $jar->set(new Cookie($key, (string)$value));
+            } else {
+                try {
+                    $jar->set($value);
+                } catch (\TypeError) {
+                    continue;
+                }
             }
         }
 
         return $jar;
+    }
+
+    public function set(Cookie|BKCookie|HttpCookie $cookie)
+    {
+        parent::set(Cookie::of($cookie));
     }
 
     public function asCookieHeader(string $uri): string

@@ -2,13 +2,13 @@
 
 namespace ju1ius\Macaron\Tests;
 
+use ju1ius\Macaron\Cookie;
 use ju1ius\Macaron\CookieAwareHttpClient;
 use ju1ius\Macaron\CookieJar;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
