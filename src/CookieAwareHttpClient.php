@@ -2,15 +2,16 @@
 
 namespace ju1ius\Macaron;
 
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\BrowserKit\CookieJar;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
-final class CookieAwareHttpClient implements HttpClientInterface
+final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInterface, ResetInterface
 {
     public function __construct(
         private readonly HttpClientInterface $client,
@@ -20,7 +21,7 @@ final class CookieAwareHttpClient implements HttpClientInterface
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         if ($cookies = $options['extra']['cookies'] ?? null) {
-            return $this->requestWithCookieJar($method, $url, $options, $cookies);
+            return $this->requestWithCookieJar($method, $url, $options, CookieJar::of($cookies));
         }
         return $this->client->request($method, $url, $options);
     }
@@ -35,16 +36,33 @@ final class CookieAwareHttpClient implements HttpClientInterface
         return new self($this->client->withOptions($options));
     }
 
-    private function requestWithCookieJar(string $method, string $url, array $options, array $cookies): ResponseInterface
+    public function setLogger(LoggerInterface $logger): void
     {
-        $jar = self::createCookieJar($cookies);
+        if ($this->client instanceof LoggerAwareInterface) {
+            $this->client->setLogger($logger);
+        }
+    }
+
+    public function reset(): void
+    {
+        if ($this->client instanceof ResetInterface) {
+            $this->client->reset();
+        }
+    }
+
+    private function requestWithCookieJar(
+        string $method,
+        string $url,
+        array $options,
+        CookieJar $jar
+    ): ResponseInterface {
         // FIXME: we should get the value from the decorated client!
         $maxRedirects = $options['max_redirects'] ?? HttpClientInterface::OPTIONS_DEFAULTS['max_redirects'];
         $options['max_redirects'] = 0;
         $numRedirects = 0;
         do {
             // FIXME: $url is wrong on 1st request when using 'base_uri' option with a relative URI
-            $options['headers']['cookie'] = self::getCookieHeader($jar, $url);
+            $options['headers']['cookie'] = $jar->asCookieHeader($url);
             $response = $this->client->request($method, $url, $options);
             $status = $response->getStatusCode();
             $headers = $response->getHeaders(false);
@@ -69,31 +87,5 @@ final class CookieAwareHttpClient implements HttpClientInterface
         } while ($numRedirects <= $maxRedirects);
 
         throw new RedirectionException($response);
-    }
-
-    private static function getCookieHeader(CookieJar $jar, string $uri): string
-    {
-        $cookies = [];
-        foreach ($jar->allRawValues($uri) as $name => $value) {
-            $cookies[] = "{$name}={$value}";
-        }
-
-        return implode('; ', $cookies);
-    }
-
-    private static function createCookieJar(array $cookies): CookieJar
-    {
-        $jar = new CookieJar();
-        foreach ($cookies as $key => $value) {
-            if ($cookie = match (true) {
-                $value instanceof Cookie => $value,
-                \is_scalar($value) => new Cookie($key, (string)$value),
-                default => null,
-            }) {
-                $jar->set($cookie);
-            }
-        }
-
-        return $jar;
     }
 }
