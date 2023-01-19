@@ -1,0 +1,32 @@
+{
+  "name": "ju1ius/macaron",
+  "description": "Cookie aware wrapper for symfony/http-client",
+  "type": "library",
+  "authors": [
+    {
+      "name": "ju1ius",
+      "email": "jules.bernable@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "XDEBUG_MODE=off ./tools/phpunit.phar",
+    "coverage": "XDEBUG_MODE=coverage ./tools/phpunit.phar --coverage-html=tmp/coverage"
+  },
+  "autoload": {
+    "psr-4": {
+      "ju1ius\\Macaron\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ju1ius\\Macaron\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.1",
+    "symfony/http-client-contracts": "^3.2",
+    "symfony/browser-kit": "^6.2",
+    "symfony/http-client": "^6.2"
+  }
+}
