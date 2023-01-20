@@ -5,7 +5,6 @@ namespace ju1ius\Macaron;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
-use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
@@ -20,8 +19,8 @@ final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInt
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        if ($cookies = $options['extra']['cookies'] ?? null) {
-            return $this->requestWithCookieJar($method, $url, $options, CookieJar::of($cookies));
+        if ($jar = $this->createCookieJar($method, $url, $options)) {
+            return $this->requestWithCookieJar($method, $url, $options, $jar);
         }
         return $this->client->request($method, $url, $options);
     }
@@ -50,6 +49,18 @@ final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInt
         }
     }
 
+    private function createCookieJar(string $method, string $url, array $options): ?CookieJar
+    {
+        if (!$factory = $options['extra']['cookies'] ?? null) {
+            return null;
+        }
+        if (\is_callable($factory)) {
+            return CookieJar::of($factory($method, $url, $options));
+        }
+
+        return CookieJar::of($factory);
+    }
+
     private function requestWithCookieJar(
         string $method,
         string $url,
@@ -60,26 +71,33 @@ final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInt
         $maxRedirects = $options['max_redirects'] ?? HttpClientInterface::OPTIONS_DEFAULTS['max_redirects'];
         $options['max_redirects'] = 0;
         $numRedirects = 0;
+        $hostOptions = new HostOptions();
         do {
             // FIXME: $url is wrong on 1st request when using 'base_uri' option with a relative URI
             $options['headers']['cookie'] = $jar->asCookieHeader($url);
             $response = $this->client->request($method, $url, $options);
+            /**
+             * @see https://www.rfc-editor.org/rfc/rfc9110#name-redirection-3xx
+             */
             $status = $response->getStatusCode();
             $headers = $response->getHeaders(false);
-            $jar->updateFromSetCookie($headers['set-cookie'] ?? [], $response->getInfo('url'));
-            if ($status >= 300 && $status < 400) {
+            $effectiveUri = $response->getInfo('url');
+            $hostOptions->storeForUri($effectiveUri, $options);
+            $jar->updateFromSetCookie($headers['set-cookie'] ?? [], $effectiveUri);
+            if ($status >= 300 && $status < 400 && $location = $response->getInfo('redirect_url')) {
                 $numRedirects++;
-                if (!$location = $headers['location'][0] ?? null) {
-                    throw new TransportException(sprintf(
-                        'Missing response header "Location" for [%d] %s',
-                        $status,
-                        $url,
-                    ));
-                }
                 $url = $location;
+                $options = $hostOptions->updateForRedirect($location, $options);
                 if (\in_array($status, [301, 302, 303], true)) {
-                    $method = 'GET';
-                    unset($options['query'], $options['body']);
+                    switch ($method) {
+                        case 'HEAD':
+                        case 'GET':
+                            break;
+                        default:
+                            $method = 'GET';
+                            unset($options['query'], $options['body']);
+                            break;
+                    }
                 }
                 continue;
             }
