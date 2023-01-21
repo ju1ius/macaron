@@ -2,6 +2,7 @@
 
 namespace ju1ius\Macaron;
 
+use ju1ius\Macaron\Internal\ClientState;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
@@ -71,7 +72,7 @@ final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInt
         $maxRedirects = $options['max_redirects'] ?? HttpClientInterface::OPTIONS_DEFAULTS['max_redirects'];
         $options['max_redirects'] = 0;
         $numRedirects = 0;
-        $hostOptions = new HostOptions();
+        $state = null;
         do {
             // FIXME: $url is wrong on 1st request when using 'base_uri' option with a relative URI
             $options['headers']['cookie'] = $jar->asCookieHeader($url);
@@ -82,23 +83,12 @@ final class CookieAwareHttpClient implements HttpClientInterface, LoggerAwareInt
             $status = $response->getStatusCode();
             $headers = $response->getHeaders(false);
             $effectiveUri = $response->getInfo('url');
-            $hostOptions->storeForUri($effectiveUri, $options);
+            $state ??= new ClientState($effectiveUri, $options);
             $jar->updateFromSetCookie($headers['set-cookie'] ?? [], $effectiveUri);
             if ($status >= 300 && $status < 400 && $location = $response->getInfo('redirect_url')) {
                 $numRedirects++;
                 $url = $location;
-                $options = $hostOptions->updateForRedirect($location, $options);
-                if (\in_array($status, [301, 302, 303], true)) {
-                    switch ($method) {
-                        case 'HEAD':
-                        case 'GET':
-                            break;
-                        default:
-                            $method = 'GET';
-                            unset($options['query'], $options['body']);
-                            break;
-                    }
-                }
+                [$method, $options] = $state->redirect($method, $status, $location);
                 continue;
             }
             return $response;

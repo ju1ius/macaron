@@ -281,6 +281,9 @@ final class CookieAwareHttpClientTest extends TestCase
      */
     private static function redirect(int $code, string $location, array $cookies = []): MockResponse
     {
+        if (!parse_url($location, \PHP_URL_HOST)) {
+            $location = "http://macaron.test{$location}";
+        }
         return new MockResponse('', [
             'http_code' => $code,
             'redirect_url' => $location,
