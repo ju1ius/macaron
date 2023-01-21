@@ -33,4 +33,21 @@ final class CookieTest extends TestCase
             new Cookie('foo', 'bar'),
         ];
     }
+
+    public function testOfThrowsTypeError(): void
+    {
+        $this->expectException(\TypeError::class);
+        Cookie::of(new class{});
+    }
+
+    public function testAddCaster(): void
+    {
+        $cookie = new class {
+            public string $name = 'foo';
+            public string $value = 'bar';
+        };
+        Cookie::addCaster($cookie::class, fn($c) => new Cookie($c->name, $c->value));
+        $expected = new Cookie($cookie->name, $cookie->value);
+        Assert::assertEquals($expected, Cookie::of($cookie));
+    }
 }
