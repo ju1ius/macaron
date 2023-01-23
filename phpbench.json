@@ -1,0 +1,19 @@
+{
+  "$schema":"https://raw.githubusercontent.com/phpbench/phpbench/master/phpbench.schema.json",
+  "runner.bootstrap": "vendor/autoload.php",
+  "runner.path": "./bench",
+  "runner.file_pattern": "*Bench.php",
+  "storage.xml_storage_path": "tmp/phpbench",
+  "runner.php_config": {
+    "xdebug.mode": "off"
+  },
+  "core.profiles": {
+    "jit": {
+      "runner.php_config": {
+        "xdebug.mode": "off",
+        "opcache.enable_cli": true,
+        "opcache.jit_buffer_size": "32M"
+      }
+    }
+  }
+}

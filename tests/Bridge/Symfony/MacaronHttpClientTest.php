@@ -1,29 +1,65 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests;
+namespace ju1ius\Macaron\Tests\Bridge\Symfony;
 
+use ju1ius\FusBup\PublicSuffixListInterface;
+use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
 use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\CookieAwareHttpClient;
+use ju1ius\Macaron\Cookie\ResponseCookie;
 use ju1ius\Macaron\CookieJar;
+use ju1ius\Macaron\Uri\UriFactory;
+use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Clock\ClockInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Clock\MockClock;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class CookieAwareHttpClientTest extends TestCase
+final class MacaronHttpClientTest extends TestCase
 {
+    private static function getClock(): ClockInterface
+    {
+        static $clock;
+        return $clock ??= new MockClock('now', 'UTC');
+    }
+
+    private function createClient(HttpClientInterface|callable|iterable|null $factory): MacaronHttpClient
+    {
+        if (!$factory instanceof HttpClientInterface) {
+            $factory = new MockHttpClient($factory, 'http://macaron.test');
+        }
+        return new MacaronHttpClient(
+            $factory,
+            new UriService(
+                new UriFactory(),
+                $this->createMock(PublicSuffixListInterface::class),
+            ),
+            self::getClock(),
+        );
+    }
+
+    private static function createCookieJar(): CookieJar
+    {
+        $uriManager = new UriService();
+        return new CookieJar($uriManager, clock: self::getClock());
+    }
+
     public function testWithOptions(): void
     {
-        $client = self::createClient(null);
-        Assert::assertInstanceOf(CookieAwareHttpClient::class, $client->withOptions([]));
+        $client = $this->createClient(null);
+        Assert::assertInstanceOf(MacaronHttpClient::class, $client->withOptions([]));
     }
 
     public function testReset(): void
     {
-        $client = new CookieAwareHttpClient($inner = new MockHttpClient(fn() => new MockResponse()));
+        $inner = new MockHttpClient(fn() => new MockResponse());
+        $client = $this->createClient($inner);
         $client->request('GET', '/');
         Assert::assertSame(1, $inner->getRequestsCount());
         $client->reset();
@@ -36,9 +72,9 @@ final class CookieAwareHttpClientTest extends TestCase
               Assert::assertSame('POST', $method);
               Assert::assertSame('/a', $url);
               Assert::assertNotEmpty($options);
-              return new CookieJar();
+              return self::createCookieJar();
         };
-        $client = self::createClient(new MockResponse());
+        $client = $this->createClient(fn() => new MockResponse());
         $response = $client->request('POST', '/a', [
             'extra' => ['cookies' => $cookieFactory],
         ]);
@@ -53,7 +89,7 @@ final class CookieAwareHttpClientTest extends TestCase
             self::redirect(307, '/b'),
             new MockResponse('OK'),
         ];
-        $client = new CookieAwareHttpClient($inner = new MockHttpClient($factory));
+        $client = $this->createClient($inner = new MockHttpClient($factory));
         $response = $client->request('GET', '/foo');
         Assert::assertSame(307, $response->getStatusCode());
         Assert::assertSame(1, $inner->getRequestsCount());
@@ -66,10 +102,10 @@ final class CookieAwareHttpClientTest extends TestCase
             switch ($url) {
                 case 'http://macaron.test/a':
                     Assert::assertSame(['cookie: foo=bar'], $cookie);
-                    return self::redirect(307, 'http://macaron.test/b', [new Cookie('a', '1')]);
+                    return self::redirect(307, 'http://macaron.test/b', [new ResponseCookie('a', '1')]);
                 case 'http://macaron.test/b':
                     Assert::assertSame(['cookie: foo=bar; a=1'], $cookie);
-                    return self::redirect(302, 'http://macaron.test/c', [new Cookie('b', '1')]);
+                    return self::redirect(302, 'http://macaron.test/c', [new ResponseCookie('b', '1')]);
                 case 'http://macaron.test/c':
                     Assert::assertSame(['cookie: foo=bar; a=1; b=1'], $cookie);
                     return new MockResponse('OK');
@@ -77,7 +113,7 @@ final class CookieAwareHttpClientTest extends TestCase
                     return null;
             }
         };
-        $client = self::createClient($factory);
+        $client = $this->createClient($factory);
         $response = $client->request('GET', '/a', [
             'max_redirects' => 5,
             'extra' => ['cookies' => ['foo' => 'bar']],
@@ -88,20 +124,21 @@ final class CookieAwareHttpClientTest extends TestCase
 
     public function testRequestWithCookieJar(): void
     {
-        $jar = new CookieJar();
+        $jar = self::createCookieJar();
         $factory = function() use ($jar) {
             Assert::assertEmpty($jar->all());
-            yield self::redirect(307, 'http://macaron.test/b', [new Cookie('a', '1')]);
-            yield self::redirect(302, 'http://macaron.test/c', [new Cookie('b', '1')]);
+            yield self::redirect(307, 'http://macaron.test/b', [new ResponseCookie('a', '1')]);
+            yield self::redirect(302, 'http://macaron.test/c', [new ResponseCookie('b', '1')]);
             yield new MockResponse('OK');
         };
-        $client = self::createClient($factory());
+        $client = $this->createClient($factory());
         $response = $client->request('GET', '/', ['extra' => ['cookies' => $jar]]);
         Assert::assertSame(200, $response->getStatusCode());
 
+        $now = self::getClock()->now();
         $expected = [
-            new Cookie('a', '1', path: '/', domain: 'macaron.test'),
-            new Cookie('b', '1', path: '/', domain: 'macaron.test'),
+            new Cookie('a', '1', domain: 'macaron.test', path: '/', hostOnly: true, createdAt: $now),
+            new Cookie('b', '1', domain: 'macaron.test', path: '/', hostOnly: true, createdAt: $now),
         ];
         Assert::assertEquals($expected, $jar->all());
     }
@@ -116,8 +153,8 @@ final class CookieAwareHttpClientTest extends TestCase
             ]);
             yield new MockResponse('OK');
         };
-        $client = self::createClient($factory());
-        $response = $client->request('GET', '/', ['extra' => ['cookies' => new CookieJar()]]);
+        $client = $this->createClient($factory());
+        $response = $client->request('GET', '/', ['extra' => ['cookies' => self::createCookieJar()]]);
         Assert::assertSame(200, $response->getStatusCode());
         $body = '';
         foreach ($client->stream($response) as $chunk) {
@@ -128,7 +165,7 @@ final class CookieAwareHttpClientTest extends TestCase
 
     public function testItFailsWhenMissingLocationHeader(): void
     {
-        $client = self::createClient(fn() => new MockResponse('', ['http_code' => 307]));
+        $client = $this->createClient(fn() => new MockResponse('', ['http_code' => 307]));
         $this->expectException(RedirectionExceptionInterface::class);
         $response = $client->request('GET', '/foo', [
             'extra' => ['cookies' => ['a' => 'b']],
@@ -138,7 +175,7 @@ final class CookieAwareHttpClientTest extends TestCase
 
     public function testItFailsWhenTooManyRedirects(): void
     {
-        $client = self::createClient([
+        $client = $this->createClient([
             self::redirect(307, '/a'),
             self::redirect(307, '/b'),
         ]);
@@ -151,7 +188,7 @@ final class CookieAwareHttpClientTest extends TestCase
 
     public function testItSkipsInvalidCookies(): void
     {
-        $client = self::createClient(function(string $method, string $url, array $options = []) {
+        $client = $this->createClient(function(string $method, string $url, array $options = []) {
             $cookie = $options['normalized_headers']['cookie'] ?? null;
             Assert::assertSame(['cookie: foo=bar'], $cookie);
             return new MockResponse('OK');
@@ -172,16 +209,14 @@ final class CookieAwareHttpClientTest extends TestCase
         $factory = [
             new MockResponse('', ['http_code' => 304])
         ];
-        $client = self::createClient($factory);
+        $client = $this->createClient($factory);
         $response = $client->request('GET', '/foo', [
-            'extra' => ['cookies' => new CookieJar()],
+            'extra' => ['cookies' => self::createCookieJar()],
         ]);
         Assert::assertSame(304, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider provideAuth
-     */
+    #[DataProvider('provideAuth')]
     public function testAuth(array $options, string $expected): void
     {
         $factory = function(string $method, string $url, array $options = []) use ($expected) {
@@ -198,10 +233,10 @@ final class CookieAwareHttpClientTest extends TestCase
                     return new MockResponse();
             }
         };
-        $client = self::createClient($factory);
+        $client = $this->createClient($factory);
         $response = $client->request('GET', '/a', [
             ...$options,
-            'extra' => ['cookies' => new CookieJar()],
+            'extra' => ['cookies' => self::createCookieJar()],
         ]);
         Assert::assertSame(200, $response->getStatusCode());
     }
@@ -222,9 +257,7 @@ final class CookieAwareHttpClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider redirectChangesRequestMethodProvider
-     */
+    #[DataProvider('redirectChangesRequestMethodProvider')]
     public function testRedirectChangesRequestMethod(string $method, int $statusCode, string $expected): void
     {
         $factory = function(string $method, string $url) use ($statusCode, $expected) {
@@ -236,9 +269,9 @@ final class CookieAwareHttpClientTest extends TestCase
                     return new MockResponse();
             }
         };
-        $client = self::createClient($factory);
+        $client = $this->createClient($factory);
         $response = $client->request($method, '/a', [
-            'extra' => ['cookies' => new CookieJar()],
+            'extra' => ['cookies' => self::createCookieJar()],
         ]);
         Assert::assertSame(200, $response->getStatusCode());
     }
@@ -266,18 +299,12 @@ final class CookieAwareHttpClientTest extends TestCase
                 $this->test->addToAssertionCount(1);
             }
         };
-        $client = new CookieAwareHttpClient($inner);
+        $client = $this->createClient($inner);
         $client->setLogger($logger);
     }
 
-    private static function createClient($factory): CookieAwareHttpClient
-    {
-        $client = new MockHttpClient($factory, 'http://macaron.test');
-        return new CookieAwareHttpClient($client);
-    }
-
     /**
-     * @param Cookie[] $cookies
+     * @param ResponseCookie[] $cookies
      */
     private static function redirect(int $code, string $location, array $cookies = []): MockResponse
     {

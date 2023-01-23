@@ -2,8 +2,16 @@
   "name": "ju1ius/macaron",
   "type": "library",
   "license": "MIT",
-  "description": "Cookie aware wrapper for symfony/http-client",
-  "keywords": ["symfony", "http-client", "cookie", "cookie-jar"],
+  "description": "RFC6265bis compliant cookie jar for HTTP clients",
+  "keywords": [
+    "cookie",
+    "cookie-jar",
+    "http",
+    "http-client",
+    "http-state",
+    "RFC6265",
+    "symfony"
+  ],
   "authors": [
     {
       "name": "ju1ius",
@@ -12,7 +20,8 @@
   ],
   "scripts": {
     "test": "XDEBUG_MODE=off ./tools/phpunit.phar",
-    "coverage": "rm -rf tmp/coverage && XDEBUG_MODE=coverage ./tools/phpunit.phar --coverage-html=tmp/coverage"
+    "coverage": "rm -rf tmp/coverage && XDEBUG_MODE=off php -dpcov.enabled=1 ./tools/phpunit.phar --coverage-html=tmp/coverage",
+    "bench": "./tools/phpbench.phar run --report=aggregate"
   },
   "autoload": {
     "psr-4": {
@@ -21,17 +30,36 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ju1ius\\Macaron\\Tests\\": "tests/"
+      "ju1ius\\Macaron\\Tests\\": "tests/",
+      "ju1ius\\Macaron\\Benchmarks\\": "bench/"
     }
   },
   "require": {
     "php": ">=8.1",
+    "ext-intl": "*",
     "symfony/http-client-contracts": "^3.2",
-    "symfony/browser-kit": "^6.0",
-    "symfony/http-client": "^6.0"
+    "symfony/http-client": "^6.0",
+    "psr/clock": "^1.0",
+    "psr/clock-implementation": "*",
+    "psr/http-message": "^1.0",
+    "psr/http-factory": "^1.0",
+    "ju1ius/fusbup": "^0.3"
   },
   "require-dev": {
-    "symfony/http-foundation": "^6.0",
-    "symfony/process": "^6.2"
+    "ext-sqlite3": "*",
+    "symfony/clock": "^6.2",
+    "symfony/stopwatch": "^6.2",
+    "guzzlehttp/guzzle": "^7.5",
+    "php-http/mock-client": "^1.5"
+  },
+  "suggest": {
+    "ext-sqlite3": "To use the default persistent cookie storage implementation.",
+    "guzzlehttp/guzzle": "To use Macaron as a Guzzle middleware.",
+    "symfony/http-client": "To use the Symfony Macaron HTTP client."
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   }
 }

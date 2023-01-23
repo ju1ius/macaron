@@ -1,0 +1,36 @@
+[
+  {
+    "name": "match-slash",
+    "path": "/"
+  },
+  {
+    "name": "match-page",
+    "path": "match.html"
+  },
+  {
+    "name": "match-prefix",
+    "path": "cookies"
+  },
+  {
+    "name": "match-slash-prefix",
+    "path": "/cookies"
+  },
+  {
+    "name": "match-slash-prefix-slash",
+    "path": "/cookies/"
+  },
+  {
+    "name": "match-exact-page",
+    "path": "/cookies/path/match.html"
+  },
+  {
+    "name": "no-match",
+    "path": "/cook",
+    "match": false
+  },
+  {
+    "name": "no-match-subpath",
+    "path": "/w/",
+    "match": false
+  }
+]

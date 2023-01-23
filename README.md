@@ -2,9 +2,12 @@
 
 [![codecov](https://codecov.io/gh/ju1ius/macaron/branch/main/graph/badge.svg?token=ZggiPVHfWa)](https://codecov.io/gh/ju1ius/macaron)
 
-*«Macaron le Glouton»* is the french name of the Cookie Monster.
+*«Macaron le Glouton»* is the French name of the Cookie Monster, and a
+[RFC6265bis](https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html)-compliant
+cookie jar implementation for PHP HTTP clients.
 
-`ju1ius/macaron` provides a cookie-aware wrapper for `symfony/http-client`.
+Currently, the only available integration is for the `symfony/http-client` component.
+Integration with other PSR18-compatible clients is planned.
 
 ## Installation
 
@@ -12,18 +15,19 @@
 composer require ju1ius/macaron
 ```
 
-## Usage
+
+## Basic usage
 
 ```php
-use ju1ius\Macaron\CookieAwareHttpClient;
-use ju1ius\Macaron\CookieJar;
+use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new CookieAwareHttpClient(HttpClient::create());
-$cookieJar = CookieJar::of([
-    'foo' => 'bar',
-]);
+$macaron = new MacaronHttpClient(HttpClient::create());
 $macaron->request('GET', 'https://example.com', [
-    'extra' => ['cookies' => $cookieJar],
+    'extra' => [
+        'cookies' => [
+            'foo' => 'bar',
+        ]
+    ],
 ]);
 ```
