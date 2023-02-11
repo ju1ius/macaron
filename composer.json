@@ -37,20 +37,20 @@
   "require": {
     "php": ">=8.1",
     "ext-intl": "*",
-    "symfony/http-client-contracts": "^3.2",
-    "symfony/http-client": "^6.0",
+    "ju1ius/fusbup": "^0.3",
     "psr/clock": "^1.0",
     "psr/clock-implementation": "*",
     "psr/http-message": "^1.0",
-    "psr/http-factory": "^1.0",
-    "ju1ius/fusbup": "^0.3"
+    "psr/http-factory": "^1.0"
   },
   "require-dev": {
     "ext-sqlite3": "*",
-    "symfony/clock": "^6.2",
-    "symfony/stopwatch": "^6.2",
     "guzzlehttp/guzzle": "^7.5",
-    "php-http/mock-client": "^1.5"
+    "php-http/mock-client": "^1.5",
+    "symfony/clock": "^6.2",
+    "symfony/http-client-contracts": "^3.2",
+    "symfony/http-client": "^6.0",
+    "symfony/stopwatch": "^6.2"
   },
   "suggest": {
     "ext-sqlite3": "To use the default persistent cookie storage implementation.",
@@ -58,6 +58,7 @@
     "symfony/http-client": "To use the Symfony Macaron HTTP client."
   },
   "config": {
+    "sort-packages": true,
     "allow-plugins": {
       "php-http/discovery": true
     }
