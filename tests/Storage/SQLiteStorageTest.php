@@ -130,8 +130,9 @@ final class SQLiteStorageTest extends TestCase
     public function testStorageException(): void
     {
         $storage = new SQLiteStorage();
-        // null path will trigger a constraint error
-        $storage->add($a = self::createCookie('a', 'b', path: null, persistent: true));
+        // should trigger a unique constraint error
+        $storage->add(self::createCookie('a', 'b', domain: 'a.b', path: '/', persistent: true));
+        $storage->add(self::createCookie('a', 'b', domain: 'a.b', path: '/', persistent: true));
         $this->expectException(CookieStorageException::class);
         $storage->flush();
     }

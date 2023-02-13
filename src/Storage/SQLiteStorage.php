@@ -23,7 +23,7 @@ if (!class_exists(SQLite3::class, false)) {
 
 final class SQLiteStorage implements PersistentStorageInterface
 {
-    private SQLite3 $connection;
+    private ?SQLite3 $connection = null;
 
     /**
      * @var Operation[]
