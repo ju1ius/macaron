@@ -14,6 +14,7 @@ use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
+use Symfony\Component\HttpClient\HttpClientTrait;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
@@ -21,6 +22,8 @@ use Symfony\Contracts\Service\ResetInterface;
 
 final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterface, ResetInterface
 {
+    use HttpClientTrait;
+
     /**
      * @var Cookie[]
      */
@@ -35,10 +38,14 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        if ($jar = $this->createCookieJar($method, $url, $options)) {
-            return $this->requestWithCookieJar($method, $url, $options, $jar);
+        // FIXME: we should get these values from the decorated client instead!
+        [$url, $options] = self::prepareRequest($method, $url, $options, HttpClientInterface::OPTIONS_DEFAULTS, true);
+        $uri = $this->uriService->createUri(implode('', $url));
+
+        if ($jar = $this->createCookieJar($method, $uri, $options)) {
+            return $this->requestWithCookieJar(HttpMethod::of($method), $uri, $options, $jar);
         }
-        return $this->client->request($method, $url, $options);
+        return $this->client->request($method, (string)$uri, $options);
     }
 
     public function stream(iterable|ResponseInterface $responses, float $timeout = null): ResponseStreamInterface
@@ -69,17 +76,19 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
         }
     }
 
-    private function createCookieJar(string $method, string $url, array $options): ?CookieJar
+    private function createCookieJar(string $method, UriInterface $uri, array $options): ?CookieJar
     {
         $this->initialCookies = [];
         if (null === $factory = $options['extra']['cookies'] ?? null) {
             return null;
         }
+        if (\is_callable($factory)) {
+            if (!$factory = $factory($method, $uri, $options)) {
+                return null;
+            }
+        }
         if ($factory instanceof CookieJar) {
             return $factory;
-        }
-        if (\is_callable($factory)) {
-            return $factory($method, $url, $options);
         }
 
         $jar = new CookieJar($this->uriService, clock: $this->clock);
@@ -87,9 +96,22 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
             $now = $this->clock->now();
             foreach ($factory as $name => $value) {
                 if ($value instanceof Cookie) {
+                    if ($value->domain === '') {
+                        $value->domain = $uri->getHost();
+                    }
+                    if ($value->path === '') {
+                        $value->path = CookiePath::default($uri);
+                    }
                     $jar->store($value);
                 } else if (\is_string($name) && \is_scalar($value)) {
-                    $cookie = new Cookie($name, (string)$value, persistent: false, httpOnly: true, createdAt: $now);
+                    $cookie = new Cookie(
+                        $name,
+                        (string)$value,
+                        $uri->getHost(),
+                        CookiePath::default($uri),
+                        httpOnly: true,
+                        createdAt: $now,
+                    );
                     $this->initialCookies[] = $cookie;
                     $jar->store($cookie);
                 }
@@ -99,37 +121,31 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
     }
 
     private function requestWithCookieJar(
-        string $method,
-        string $url,
+        HttpMethod $method,
+        UriInterface $uri,
         array $options,
         CookieJar $jar
     ): ResponseInterface {
-        // FIXME: we should get the value from the decorated client!
-        $maxRedirects = $options['max_redirects'] ?? HttpClientInterface::OPTIONS_DEFAULTS['max_redirects'];
+        $maxRedirects = $options['max_redirects'];
         $options['max_redirects'] = 0;
         $numRedirects = 0;
-        $method = HttpMethod::of($method);
-        $uri = $this->uriService->createUri($url);
-        $state = null;
+        $state = new ClientState($options);
         $chain = new RequestChain($this->uriService);
+        $chain->start($uri);
         do {
-            // FIXME: $url is wrong on 1st request when using 'base_uri' option with a relative URI
-            $options['headers']['cookie'] = $jar->retrieveForGenericRequest($method, $uri, $chain->isSameSite());
+            $cookie = $jar->retrieveForGenericRequest($method, $uri, $chain->isSameSite());
+            if ($cookie !== '') {
+                $options['headers']['cookie'] = $cookie;
+            }
             $response = $this->client->request($method->value, (string)$uri, $options);
             /**
              * @see https://www.rfc-editor.org/rfc/rfc9110#name-redirection-3xx
              */
-            $effectiveUri = $this->uriService->createUri($response->getInfo('url'));
-            if (!$state) {
-                $chain->start($effectiveUri);
-                $this->upgradeInitialCookies($jar, $effectiveUri);
-            }
-            $state ??= new ClientState($options);
             $status = $response->getStatusCode();
             $headers = $response->getHeaders(false);
             $jar->updateFromGenericResponse(
                 $method,
-                $effectiveUri,
+                $uri,
                 $status,
                 $headers['set-cookie'] ?? [],
                 $chain->isSameSite(),
@@ -148,16 +164,5 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
         } while ($numRedirects <= $maxRedirects);
 
         throw new RedirectionException($response);
-    }
-
-    private function upgradeInitialCookies(CookieJar $jar, UriInterface $uri): void
-    {
-        foreach ($this->initialCookies as $cookie) {
-            $jar->remove($cookie);
-            $cookie->domain = $uri->getHost();
-            $cookie->path = CookiePath::default($uri);
-            $jar->store($cookie);
-        }
-        $this->initialCookies = [];
     }
 }

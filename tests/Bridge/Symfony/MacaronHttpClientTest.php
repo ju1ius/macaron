@@ -13,6 +13,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
+use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Clock\MockClock;
@@ -60,7 +61,7 @@ final class MacaronHttpClientTest extends TestCase
     {
         $inner = new MockHttpClient(fn() => new MockResponse());
         $client = $this->createClient($inner);
-        $client->request('GET', '/');
+        $client->request('GET', 'http://macaron.test/');
         Assert::assertSame(1, $inner->getRequestsCount());
         $client->reset();
         Assert::assertSame(0, $inner->getRequestsCount());
@@ -68,14 +69,14 @@ final class MacaronHttpClientTest extends TestCase
 
     public function testCookiesOptionCallback(): void
     {
-        $cookieFactory = function(string $method, string $url, array $options) {
+        $cookieFactory = function(string $method, UriInterface $url, array $options) {
               Assert::assertSame('POST', $method);
-              Assert::assertSame('/a', $url);
+              Assert::assertSame('http://macaron.test/a', (string)$url);
               Assert::assertNotEmpty($options);
               return self::createCookieJar();
         };
         $client = $this->createClient(fn() => new MockResponse());
-        $response = $client->request('POST', '/a', [
+        $response = $client->request('POST', 'http://macaron.test/a', [
             'extra' => ['cookies' => $cookieFactory],
         ]);
         Assert::assertSame(200, $response->getStatusCode());
@@ -90,9 +91,36 @@ final class MacaronHttpClientTest extends TestCase
             new MockResponse('OK'),
         ];
         $client = $this->createClient($inner = new MockHttpClient($factory));
-        $response = $client->request('GET', '/foo');
+        $response = $client->request('GET', 'http://macaron.test/foo');
         Assert::assertSame(307, $response->getStatusCode());
         Assert::assertSame(1, $inner->getRequestsCount());
+    }
+
+    public function testRequestWithScalarArray(): void
+    {
+        $factory = function(string $method, string $url, array $options = []) {
+            $cookie = $options['normalized_headers']['cookie'] ?? null;
+            switch ($url) {
+                case 'http://macaron.test/a':
+                    Assert::assertSame(['cookie: foo=bar'], $cookie);
+                    return self::redirect(307, 'http://macaron.test/b', [new ResponseCookie('a', '1')]);
+                case 'http://macaron.test/b':
+                    Assert::assertSame(['cookie: foo=bar; a=1'], $cookie);
+                    return self::redirect(302, 'http://macaron.test/c', [new ResponseCookie('b', '1')]);
+                case 'http://macaron.test/c':
+                    Assert::assertSame(['cookie: foo=bar; a=1; b=1'], $cookie);
+                    return new MockResponse('OK');
+                default:
+                    return null;
+            }
+        };
+        $client = $this->createClient($factory);
+        $response = $client->request('GET', 'http://macaron.test/a', [
+            'max_redirects' => 5,
+            'extra' => ['cookies' => ['foo' => 'bar']],
+        ]);
+        Assert::assertSame(200, $response->getStatusCode());
+        Assert::assertSame('OK', $response->getContent());
     }
 
     public function testRequestWithCookieArray(): void
@@ -114,9 +142,12 @@ final class MacaronHttpClientTest extends TestCase
             }
         };
         $client = $this->createClient($factory);
-        $response = $client->request('GET', '/a', [
+        $now = self::getClock()->now();
+        $response = $client->request('GET', 'http://macaron.test/a', [
             'max_redirects' => 5,
-            'extra' => ['cookies' => ['foo' => 'bar']],
+            'extra' => ['cookies' => [
+                new Cookie('foo', 'bar', 'macaron.test', persistent: true, createdAt: $now),
+            ]],
         ]);
         Assert::assertSame(200, $response->getStatusCode());
         Assert::assertSame('OK', $response->getContent());
@@ -132,7 +163,7 @@ final class MacaronHttpClientTest extends TestCase
             yield new MockResponse('OK');
         };
         $client = $this->createClient($factory());
-        $response = $client->request('GET', '/', ['extra' => ['cookies' => $jar]]);
+        $response = $client->request('GET', 'http://macaron.test/', ['extra' => ['cookies' => $jar]]);
         Assert::assertSame(200, $response->getStatusCode());
 
         $now = self::getClock()->now();
@@ -154,7 +185,7 @@ final class MacaronHttpClientTest extends TestCase
             yield new MockResponse('OK');
         };
         $client = $this->createClient($factory());
-        $response = $client->request('GET', '/', ['extra' => ['cookies' => self::createCookieJar()]]);
+        $response = $client->request('GET', 'http://macaron.test', ['extra' => ['cookies' => self::createCookieJar()]]);
         Assert::assertSame(200, $response->getStatusCode());
         $body = '';
         foreach ($client->stream($response) as $chunk) {
@@ -167,7 +198,7 @@ final class MacaronHttpClientTest extends TestCase
     {
         $client = $this->createClient(fn() => new MockResponse('', ['http_code' => 307]));
         $this->expectException(RedirectionExceptionInterface::class);
-        $response = $client->request('GET', '/foo', [
+        $response = $client->request('GET', 'http://macaron.test/foo', [
             'extra' => ['cookies' => ['a' => 'b']],
         ]);
         $response->getHeaders();
@@ -180,7 +211,7 @@ final class MacaronHttpClientTest extends TestCase
             self::redirect(307, '/b'),
         ]);
         $this->expectException(RedirectionExceptionInterface::class);
-        $client->request('GET', '/foo', [
+        $client->request('GET', 'http://macaron.test/foo', [
             'max_redirects' => 1,
             'extra' => ['cookies' => ['a' => 'b']],
         ]);
@@ -193,7 +224,7 @@ final class MacaronHttpClientTest extends TestCase
             Assert::assertSame(['cookie: foo=bar'], $cookie);
             return new MockResponse('OK');
         });
-        $client->request('GET', '/', [
+        $client->request('GET', 'http://macaron.test', [
             'extra' => [
                 'cookies' => [
                     'foo' => 'bar',
@@ -210,7 +241,7 @@ final class MacaronHttpClientTest extends TestCase
             new MockResponse('', ['http_code' => 304])
         ];
         $client = $this->createClient($factory);
-        $response = $client->request('GET', '/foo', [
+        $response = $client->request('GET', 'http://macaron.test/foo', [
             'extra' => ['cookies' => self::createCookieJar()],
         ]);
         Assert::assertSame(304, $response->getStatusCode());
@@ -234,7 +265,7 @@ final class MacaronHttpClientTest extends TestCase
             }
         };
         $client = $this->createClient($factory);
-        $response = $client->request('GET', '/a', [
+        $response = $client->request('GET', 'http://macaron.test/a', [
             ...$options,
             'extra' => ['cookies' => self::createCookieJar()],
         ]);
@@ -270,7 +301,7 @@ final class MacaronHttpClientTest extends TestCase
             }
         };
         $client = $this->createClient($factory);
-        $response = $client->request($method, '/a', [
+        $response = $client->request($method, 'http://macaron.test/a', [
             'extra' => ['cookies' => self::createCookieJar()],
         ]);
         Assert::assertSame(200, $response->getStatusCode());

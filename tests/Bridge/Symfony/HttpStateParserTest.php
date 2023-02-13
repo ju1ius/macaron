@@ -77,9 +77,13 @@ final class HttpStateParserTest extends TestCase
                     ],
                 ]);
             case 'cookie-parser-result':
-                $cookieLine = $options['normalized_headers']['cookie'][0] ?? '';
                 $expected = $test->expected;
-                Assert::assertSame("cookie: {$expected}", $cookieLine);
+                $cookieLine = $options['normalized_headers']['cookie'][0] ?? '';
+                if ($expected === '') {
+                    Assert::assertEmpty($cookieLine);
+                } else {
+                    Assert::assertSame("cookie: {$expected}", $cookieLine);
+                }
                 return new MockResponse('', [
                     'http_code' => 200,
                 ]);
