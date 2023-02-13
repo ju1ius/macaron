@@ -33,9 +33,15 @@ final class CookieSameSiteTest extends TestCase
 
     public static function sameSiteProvider(): iterable
     {
-        $strict = 'strict=1; lax=1; none=1; unspecified=1';
-        $lax = 'lax=1; none=1; unspecified=1';
+        $strict = 'strict=1; lax=1; none=1; default=1';
+        $lax = 'lax=1; none=1; default=1';
         $cross = '';
+        yield 'SameSite=None is not sent to non-secure protocol' => [
+            'http://wpt.test',
+            [],
+            'http://wpt.test',
+            'strict=1; lax=1; default=1',
+        ];
         yield 'Same-host fetches are strictly same-site' => [
             'https://wpt.test',
             [],
@@ -81,7 +87,7 @@ final class CookieSameSiteTest extends TestCase
             "lax=1; SameSite=Lax; path=/; domain={$domain}",
             "none=1; SameSite=None; Secure; path=/; domain={$domain}",
             "none_insecure=1; SameSite=None; path=/; domain={$domain}",
-            "unspecified=1; path=/; domain={$domain}",
+            "default=1; path=/; domain={$domain}",
         ];
     }
 }
