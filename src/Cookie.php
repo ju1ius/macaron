@@ -16,7 +16,7 @@ final class Cookie implements \Stringable
         public string $name,
         public string $value,
         public string $domain = '',
-        public ?string $path = null,
+        public string $path = '/',
         public bool $persistent = false,
         ?int $expiresAt = null,
         public bool $hostOnly = false,
