@@ -89,8 +89,8 @@ final class Uri implements UriInterface, \Stringable
                 $authority = $userInfo . '@';
             }
             $authority .= $host;
-            if ($port = $this->port) {
-                $authority .= ':' . $port;
+            if ($this->port && $this->port !== self::defaultPort($this->scheme)) {
+                $authority .= ':' . $this->port;
             }
         }
 

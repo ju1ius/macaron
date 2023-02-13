@@ -111,7 +111,7 @@ final class UriTest extends TestCase
             [
                 'scheme' => 'http',
                 'host' => 'foo.bar',
-                'authority' => 'foo.bar:80',
+                'authority' => 'foo.bar',
                 'userInfo' => '',
                 'port' => 80,
                 'path' => '/baz',
@@ -120,13 +120,13 @@ final class UriTest extends TestCase
             ],
         ];
         yield [
-            'http://user:pass@example.com',
+            'https://user:pass@example.com',
             [
-                'scheme' => 'http',
+                'scheme' => 'https',
                 'host' => 'example.com',
-                'authority' => 'user:pass@example.com:80',
+                'authority' => 'user:pass@example.com',
                 'userInfo' => 'user:pass',
-                'port' => 80,
+                'port' => 443,
                 'path' => '',
                 'query' => '',
                 'fragment' => '',
