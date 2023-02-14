@@ -4,7 +4,6 @@ namespace ju1ius\Macaron\Tests\CookieJar;
 
 use ju1ius\Macaron\Cookie;
 use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Storage\PersistentStorageInterface;
 use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;

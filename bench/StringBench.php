@@ -6,9 +6,9 @@ use PhpBench\Attributes\Iterations;
 use PhpBench\Attributes\OutputMode;
 use PhpBench\Attributes\OutputTimeUnit;
 use PhpBench\Attributes\ParamProviders;
+use PhpBench\Attributes\RetryThreshold;
 use PhpBench\Attributes\Revs;
 use PhpBench\Attributes\Subject;
-use PhpBench\Attributes\RetryThreshold;
 
 #[RetryThreshold(3.0)]
 #[OutputTimeUnit('seconds')]

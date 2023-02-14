@@ -42,7 +42,7 @@ final class HttpStateParserTest extends TestCase
         $response = $client->request('GET', $test->uri, [
             'extra' => [
                 'test-case' => $test,
-                'cookies' => [],
+                MacaronHttpClient::OPTION_KEY => [],
             ]
         ]);
         Assert::assertSame(200, $response->getStatusCode());

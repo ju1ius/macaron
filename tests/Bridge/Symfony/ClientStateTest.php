@@ -3,9 +3,7 @@
 namespace ju1ius\Macaron\Tests\Bridge\Symfony;
 
 use ju1ius\Macaron\Bridge\Symfony\ClientState;
-use ju1ius\Macaron\Exception\InvalidUriException;
 use ju1ius\Macaron\Http\HttpMethod;
-use ju1ius\Macaron\Uri\Uri;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

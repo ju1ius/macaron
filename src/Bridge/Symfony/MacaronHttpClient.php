@@ -24,6 +24,8 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
 {
     use HttpClientTrait;
 
+    public const OPTION_KEY = 'macaron';
+
     /**
      * @var Cookie[]
      */
@@ -39,13 +41,14 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         // FIXME: we should get these values from the decorated client instead!
-        [$url, $options] = self::prepareRequest($method, $url, $options, HttpClientInterface::OPTIONS_DEFAULTS, true);
+        [$url, $options] = self::prepareRequest($method, $url, $options, self::OPTIONS_DEFAULTS, true);
         $uri = $this->uriService->createUri(implode('', $url));
+        $method = HttpMethod::of($method);
 
         if ($jar = $this->createCookieJar($method, $uri, $options)) {
-            return $this->requestWithCookieJar(HttpMethod::of($method), $uri, $options, $jar);
+            return $this->requestWithCookieJar($method, $uri, $options, $jar);
         }
-        return $this->client->request($method, (string)$uri, $options);
+        return $this->client->request($method->value, (string)$uri, $options);
     }
 
     public function stream(iterable|ResponseInterface $responses, float $timeout = null): ResponseStreamInterface
@@ -76,10 +79,10 @@ final class MacaronHttpClient implements HttpClientInterface, LoggerAwareInterfa
         }
     }
 
-    private function createCookieJar(string $method, UriInterface $uri, array $options): ?CookieJar
+    private function createCookieJar(HttpMethod $method, UriInterface $uri, array $options): ?CookieJar
     {
         $this->initialCookies = [];
-        if (null === $factory = $options['extra']['cookies'] ?? null) {
+        if (null === $factory = $options['extra'][self::OPTION_KEY] ?? null) {
             return null;
         }
         if (\is_callable($factory)) {

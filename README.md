@@ -6,9 +6,6 @@
 [RFC6265bis](https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html)-compliant
 cookie jar implementation for PHP HTTP clients.
 
-Currently, the only available integration is for the `symfony/http-client` component.
-Integration with other PSR18-compatible clients is planned.
-
 ## Installation
 
 ```sh
@@ -16,18 +13,9 @@ composer require ju1ius/macaron
 ```
 
 
-## Basic usage
+## Usage
 
-```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
-use Symfony\Component\HttpClient\HttpClient;
+Currently, the only available integration is for the `symfony/http-client` component.
+Integration with other PSR18-compatible clients is planned.
 
-$macaron = new MacaronHttpClient(HttpClient::create());
-$macaron->request('GET', 'https://example.com', [
-    'extra' => [
-        'cookies' => [
-            'foo' => 'bar',
-        ]
-    ],
-]);
-```
+* [symfony/http-client integration](docs/symfony.md)

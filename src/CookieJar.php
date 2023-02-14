@@ -3,11 +3,7 @@
 namespace ju1ius\Macaron;
 
 use ju1ius\Macaron\Clock\UTCClock;
-use ju1ius\Macaron\Cookie\CookiePath;
-use ju1ius\Macaron\Cookie\Domain;
-use ju1ius\Macaron\Cookie\ParseError;
 use ju1ius\Macaron\Cookie\SetCookieParser;
-use ju1ius\Macaron\Http\HttpMethod;
 use ju1ius\Macaron\Internal\Rfc6265BisRetrievalModelTrait;
 use ju1ius\Macaron\Internal\Rfc6265BisStorageModelTrait;
 use ju1ius\Macaron\Policy\CookiePolicyInterface;
@@ -15,7 +11,6 @@ use ju1ius\Macaron\Policy\DefaultPolicy;
 use ju1ius\Macaron\Storage\PersistentStorageInterface;
 use ju1ius\Macaron\Uri\UriService;
 use Psr\Clock\ClockInterface;
-use Psr\Http\Message\UriInterface;
 use Traversable;
 
 /**

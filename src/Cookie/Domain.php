@@ -2,12 +2,12 @@
 
 namespace ju1ius\Macaron\Cookie;
 
-use ju1ius\FusBup\Exception\IdnException;
-use ju1ius\FusBup\Utils\Idn;
 use Psr\Http\Message\UriInterface;
+use Souplette\FusBup\Exception\IdnException;
+use Souplette\FusBup\Utils\Idn;
 
 /**
- * @todo remove this class use ju1ius/fusbup for cookie domain matching
+ * @todo remove this class?
  */
 final class Domain implements \Stringable
 {
