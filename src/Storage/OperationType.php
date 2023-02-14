@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Storage;
+namespace Souplette\Macaron\Storage;
 
 enum OperationType
 {

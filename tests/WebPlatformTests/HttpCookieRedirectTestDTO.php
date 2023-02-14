@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\WebPlatformTests;
+namespace Souplette\Macaron\Tests\WebPlatformTests;
 
 final class HttpCookieRedirectTestDTO implements \Stringable
 {

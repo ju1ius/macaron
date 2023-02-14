@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Bridge\Symfony;
+namespace Souplette\Macaron\Tests\Bridge\Symfony;
 
-use ju1ius\Macaron\Bridge\Symfony\ClientState;
-use ju1ius\Macaron\Http\HttpMethod;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Bridge\Symfony\ClientState;
+use Souplette\Macaron\Http\HttpMethod;
 
 final class ClientStateTest extends TestCase
 {

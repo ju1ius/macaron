@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Cookie;
+namespace Souplette\Macaron\Cookie;
 
 /**
  * Value object representing the result of parsing a Set-Cookie header.

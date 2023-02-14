@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Cookie;
+namespace Souplette\Macaron\Cookie;
 
 /**
  * @link https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html#name-the-set-cookie-header-field

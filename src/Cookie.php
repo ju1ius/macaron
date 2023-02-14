@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron;
+namespace Souplette\Macaron;
 
-use ju1ius\Macaron\Clock\UTCClock;
-use ju1ius\Macaron\Cookie\SameSite;
-use ju1ius\Macaron\Policy\CookiePolicyInterface;
+use Souplette\Macaron\Clock\UTCClock;
+use Souplette\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Policy\CookiePolicyInterface;
 
 final class Cookie implements \Stringable
 {

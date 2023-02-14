@@ -1,6 +1,6 @@
-# ju1ius/macaron
+# souplette/macaron
 
-[![codecov](https://codecov.io/gh/ju1ius/macaron/branch/main/graph/badge.svg?token=ZggiPVHfWa)](https://codecov.io/gh/ju1ius/macaron)
+[![codecov](https://codecov.io/github/souplette-php/macaron/branch/main/graph/badge.svg?token=AUvl8W7oKb)](https://codecov.io/github/souplette-php/macaron)
 
 *«Macaron le Glouton»* is the French name of the Cookie Monster, and a
 [RFC6265bis](https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html)-compliant
@@ -9,7 +9,7 @@ cookie jar implementation for PHP HTTP clients.
 ## Installation
 
 ```sh
-composer require ju1ius/macaron
+composer require souplette/macaron
 ```
 
 

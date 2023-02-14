@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Storage;
+namespace Souplette\Macaron\Storage;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Cookie\SameSite;
-use ju1ius\Macaron\Exception\CookieStorageException;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Exception\CookieStorageException;
 use SQLite3;
 use SQLite3Result;
 use SQLite3Stmt;

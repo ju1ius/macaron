@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Bridge\Symfony;
+namespace Souplette\Macaron\Tests\Bridge\Symfony;
 
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
-use ju1ius\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestDto;
-use ju1ius\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestProvider;
-use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestDto;
+use Souplette\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestProvider;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\Clock\MockClock;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;

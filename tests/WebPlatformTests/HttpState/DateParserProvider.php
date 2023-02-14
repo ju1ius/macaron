@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\WebPlatformTests\HttpState;
+namespace Souplette\Macaron\Tests\WebPlatformTests\HttpState;
 
-use ju1ius\Macaron\Tests\ResourceHelper;
+use Souplette\Macaron\Tests\ResourceHelper;
 
 final class DateParserProvider
 {

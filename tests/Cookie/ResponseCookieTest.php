@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Cookie;
+namespace Souplette\Macaron\Tests\Cookie;
 
-use ju1ius\Macaron\Cookie\ResponseCookie;
-use ju1ius\Macaron\Cookie\SameSite;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Cookie\ResponseCookie;
+use Souplette\Macaron\Cookie\SameSite;
 
 final class ResponseCookieTest extends TestCase
 {

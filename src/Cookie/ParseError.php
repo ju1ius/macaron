@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Cookie;
+namespace Souplette\Macaron\Cookie;
 
-use ju1ius\Macaron\Exception\MacaronExceptionInterface;
+use Souplette\Macaron\Exception\MacaronExceptionInterface;
 
 final class ParseError extends \RuntimeException implements MacaronExceptionInterface
 {

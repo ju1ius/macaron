@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Http;
+namespace Souplette\Macaron\Http;
 
-use ju1ius\Macaron\Uri\Origin;
-use ju1ius\Macaron\Uri\Site;
-use ju1ius\Macaron\Uri\UriService;
 use Psr\Http\Message\UriInterface;
+use Souplette\Macaron\Uri\Origin;
+use Souplette\Macaron\Uri\Site;
+use Souplette\Macaron\Uri\UriService;
 
 /**
  * Helper class to ease computing same-origin and same-site status of a request chain.

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\CookieJar;
+namespace Souplette\Macaron\Tests\CookieJar;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Storage\PersistentStorageInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Storage\PersistentStorageInterface;
 
 final class PersistenceTest extends TestCase
 {

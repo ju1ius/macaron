@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Clock;
+namespace Souplette\Macaron\Clock;
 
 use DateTimeImmutable;
 use Psr\Clock\ClockInterface;

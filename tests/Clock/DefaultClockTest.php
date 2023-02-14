@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Clock;
+namespace Souplette\Macaron\Tests\Clock;
 
-use ju1ius\Macaron\Clock\UTCClock;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Clock\UTCClock;
 
 final class DefaultClockTest extends TestCase
 {

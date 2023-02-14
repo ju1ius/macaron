@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Benchmarks;
+namespace Souplette\Macaron\Benchmarks;
 
 use PhpBench\Attributes\Iterations;
 use PhpBench\Attributes\OutputMode;

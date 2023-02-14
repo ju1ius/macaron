@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Policy;
+namespace Souplette\Macaron\Tests\Policy;
 
-use ju1ius\Macaron\Policy\CookiePolicyInterface;
-use ju1ius\Macaron\Policy\DefaultPolicy;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Policy\CookiePolicyInterface;
+use Souplette\Macaron\Policy\DefaultPolicy;
 
 final class DefaultPolicyTest extends TestCase
 {

@@ -6,7 +6,7 @@ The `MacaronHttpClient` class decorates an existing `HttpClient` instance
 to add RFC6265-bis compliant cookie management:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
@@ -19,7 +19,7 @@ In order to actually process cookies,
 you need to pass a cookie jar factory to the request "extra" options:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new MacaronHttpClient(HttpClient::create());
@@ -45,8 +45,8 @@ The factory option can be one of the following types:
 Passing an existing cookie jar allows sharing cookies between several requests:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
-use ju1ius\Macaron\CookieJar;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\CookieJar;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new MacaronHttpClient(HttpClient::create());
@@ -63,7 +63,7 @@ $macaron->request('GET', 'https://example.test', [
 For the simplest use-cases, you can pass an array of scalars:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new MacaronHttpClient(HttpClient::create());
@@ -88,9 +88,9 @@ If you need more control on the cookie attributes,
 you can pass an array of cookie objects:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Cookie\SameSite;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new MacaronHttpClient(HttpClient::create());
@@ -110,10 +110,10 @@ Passing a callable allows deciding which cookie jar instance
 to use depending on the request:
 
 ```php
-use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Http\HttpMethod;
 use Psr\Http\Message\UriInterface;
+use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Http\HttpMethod;
 use Symfony\Component\HttpClient\HttpClient;
 
 $macaron = new MacaronHttpClient(HttpClient::create());

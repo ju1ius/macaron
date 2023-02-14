@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Cookie;
+namespace Souplette\Macaron\Cookie;
 
 /**
  * Implementation of RFC 6265 tolerant date parsing algorithm.

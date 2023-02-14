@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Cookie;
+namespace Souplette\Macaron\Cookie;
 
 use Psr\Http\Message\UriInterface;
 use Souplette\FusBup\Exception\IdnException;

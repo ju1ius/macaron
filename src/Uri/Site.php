@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Uri;
+namespace Souplette\Macaron\Uri;
 
-use ju1ius\Macaron\Exception\InvalidUriException;
+use Souplette\Macaron\Exception\InvalidUriException;
 
 /**
  * @link https://html.spec.whatwg.org/#sites

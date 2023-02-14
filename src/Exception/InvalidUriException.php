@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Exception;
+namespace Souplette\Macaron\Exception;
 
-use ju1ius\Macaron\Uri\Origin;
-use ju1ius\Macaron\Uri\Site;
+use Souplette\Macaron\Uri\Origin;
+use Souplette\Macaron\Uri\Site;
 
 final class InvalidUriException extends \InvalidArgumentException implements MacaronExceptionInterface
 {

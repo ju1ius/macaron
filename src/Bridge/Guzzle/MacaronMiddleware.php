@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Bridge\Guzzle;
+namespace Souplette\Macaron\Bridge\Guzzle;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Http\RequestChain;
-use ju1ius\Macaron\Uri\UriService;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Http\RequestChain;
+use Souplette\Macaron\Uri\UriService;
 
 final class MacaronMiddleware
 {

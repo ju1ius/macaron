@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron;
+namespace Souplette\Macaron;
 
-use ju1ius\Macaron\Clock\UTCClock;
-use ju1ius\Macaron\Cookie\SetCookieParser;
-use ju1ius\Macaron\Internal\Rfc6265BisRetrievalModelTrait;
-use ju1ius\Macaron\Internal\Rfc6265BisStorageModelTrait;
-use ju1ius\Macaron\Policy\CookiePolicyInterface;
-use ju1ius\Macaron\Policy\DefaultPolicy;
-use ju1ius\Macaron\Storage\PersistentStorageInterface;
-use ju1ius\Macaron\Uri\UriService;
 use Psr\Clock\ClockInterface;
+use Souplette\Macaron\Clock\UTCClock;
+use Souplette\Macaron\Cookie\SetCookieParser;
+use Souplette\Macaron\Internal\Rfc6265BisRetrievalModelTrait;
+use Souplette\Macaron\Internal\Rfc6265BisStorageModelTrait;
+use Souplette\Macaron\Policy\CookiePolicyInterface;
+use Souplette\Macaron\Policy\DefaultPolicy;
+use Souplette\Macaron\Storage\PersistentStorageInterface;
+use Souplette\Macaron\Uri\UriService;
 use Traversable;
 
 /**

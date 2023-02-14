@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Storage;
+namespace Souplette\Macaron\Tests\Storage;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Exception\CookieStorageException;
-use ju1ius\Macaron\Storage\SQLiteStorage;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Exception\CookieStorageException;
+use Souplette\Macaron\Storage\SQLiteStorage;
 use Symfony\Component\Clock\MockClock;
 
 final class SQLiteStorageTest extends TestCase

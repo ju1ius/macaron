@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\CookieJar;
+namespace Souplette\Macaron\Tests\CookieJar;
 
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Http\HttpMethod;
-use ju1ius\Macaron\Http\RequestChain;
-use ju1ius\Macaron\Uri\Uri;
-use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Http\HttpMethod;
+use Souplette\Macaron\Http\RequestChain;
+use Souplette\Macaron\Uri\Uri;
+use Souplette\Macaron\Uri\UriService;
 
 final class CookieSameSiteTest extends TestCase
 {

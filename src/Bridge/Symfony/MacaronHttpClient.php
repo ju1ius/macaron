@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Bridge\Symfony;
+namespace Souplette\Macaron\Bridge\Symfony;
 
-use ju1ius\Macaron\Clock\UTCClock;
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Cookie\CookiePath;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Http\HttpMethod;
-use ju1ius\Macaron\Http\RequestChain;
-use ju1ius\Macaron\Uri\UriService;
 use Psr\Clock\ClockInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Souplette\Macaron\Clock\UTCClock;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Cookie\CookiePath;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Http\HttpMethod;
+use Souplette\Macaron\Http\RequestChain;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\Exception\RedirectionException;
 use Symfony\Component\HttpClient\HttpClientTrait;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

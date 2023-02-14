@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\WebPlatformTests\HttpState;
+namespace Souplette\Macaron\Tests\WebPlatformTests\HttpState;
 
 final class HttpStateTestDto implements \Stringable
 {

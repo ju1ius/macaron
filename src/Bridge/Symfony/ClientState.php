@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Bridge\Symfony;
+namespace Souplette\Macaron\Bridge\Symfony;
 
-use ju1ius\Macaron\Http\HttpMethod;
-use ju1ius\Macaron\Internal\Str;
+use Souplette\Macaron\Http\HttpMethod;
+use Souplette\Macaron\Internal\Str;
 
 /**
  * @internal

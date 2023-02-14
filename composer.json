@@ -1,5 +1,5 @@
 {
-  "name": "ju1ius/macaron",
+  "name": "souplette/macaron",
   "type": "library",
   "license": "MIT",
   "description": "RFC6265bis compliant cookie jar for HTTP clients",
@@ -25,13 +25,13 @@
   },
   "autoload": {
     "psr-4": {
-      "ju1ius\\Macaron\\": "src/"
+      "Souplette\\Macaron\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "ju1ius\\Macaron\\Tests\\": "tests/",
-      "ju1ius\\Macaron\\Benchmarks\\": "bench/"
+      "Souplette\\Macaron\\Tests\\": "tests/",
+      "Souplette\\Macaron\\Benchmarks\\": "bench/"
     }
   },
   "require": {

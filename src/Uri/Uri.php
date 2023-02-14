@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Uri;
+namespace Souplette\Macaron\Uri;
 
-use ju1ius\Macaron\Exception\InvalidUriException;
 use Psr\Http\Message\UriInterface;
+use Souplette\Macaron\Exception\InvalidUriException;
 
 /**
  * Naive implementation of the PSR UriInterface.

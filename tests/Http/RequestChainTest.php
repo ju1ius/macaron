@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Http;
+namespace Souplette\Macaron\Tests\Http;
 
-use ju1ius\Macaron\Http\RequestChain;
-use ju1ius\Macaron\Uri\Uri;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Http\RequestChain;
+use Souplette\Macaron\Uri\Uri;
 
 final class RequestChainTest extends TestCase
 {

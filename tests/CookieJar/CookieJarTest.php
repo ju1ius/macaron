@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\CookieJar;
+namespace Souplette\Macaron\Tests\CookieJar;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\Clock\MockClock;
 
 final class CookieJarTest extends TestCase

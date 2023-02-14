@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Cookie;
+namespace Souplette\Macaron\Tests\Cookie;
 
-use ju1ius\Macaron\Cookie\ParseError;
-use ju1ius\Macaron\Cookie\ResponseCookie;
-use ju1ius\Macaron\Cookie\SameSite;
-use ju1ius\Macaron\Cookie\SetCookieParser;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
+use Souplette\Macaron\Cookie\ParseError;
+use Souplette\Macaron\Cookie\ResponseCookie;
+use Souplette\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Cookie\SetCookieParser;
 use Symfony\Component\Clock\MockClock;
 
 final class SetCookieParserTest extends TestCase

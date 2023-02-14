@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Cookie;
+namespace Souplette\Macaron\Tests\Cookie;
 
-use ju1ius\Macaron\Cookie\CookiePath;
-use ju1ius\Macaron\Uri\Uri;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Cookie\CookiePath;
+use Souplette\Macaron\Uri\Uri;
 
 final class CookiePathTest extends TestCase
 {

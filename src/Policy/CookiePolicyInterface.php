@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Policy;
+namespace Souplette\Macaron\Policy;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Http\HttpMethod;
 use Psr\Http\Message\UriInterface;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Http\HttpMethod;
 
 interface CookiePolicyInterface
 {

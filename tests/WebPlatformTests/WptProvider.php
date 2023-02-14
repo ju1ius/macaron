@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\WebPlatformTests;
+namespace Souplette\Macaron\Tests\WebPlatformTests;
 
-use ju1ius\Macaron\Tests\ResourceHelper;
+use Souplette\Macaron\Tests\ResourceHelper;
 
 final class WptProvider
 {

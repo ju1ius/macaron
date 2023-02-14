@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Storage;
+namespace Souplette\Macaron\Storage;
 
-use ju1ius\Macaron\Cookie;
+use Souplette\Macaron\Cookie;
 
 interface PersistentStorageInterface
 {

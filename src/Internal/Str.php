@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Internal;
+namespace Souplette\Macaron\Internal;
 
 final class Str
 {

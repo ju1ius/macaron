@@ -1,21 +1,21 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Bridge\Guzzle;
+namespace Souplette\Macaron\Tests\Bridge\Guzzle;
 
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
-use ju1ius\Macaron\Bridge\Guzzle\MacaronMiddleware;
-use ju1ius\Macaron\CookieJar;
-use ju1ius\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestDto;
-use ju1ius\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestProvider;
-use ju1ius\Macaron\Uri\UriService;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Souplette\Macaron\Bridge\Guzzle\MacaronMiddleware;
+use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestDto;
+use Souplette\Macaron\Tests\WebPlatformTests\HttpState\HttpStateTestProvider;
+use Souplette\Macaron\Uri\UriService;
 
 final class HttpStateParserTest extends TestCase
 {

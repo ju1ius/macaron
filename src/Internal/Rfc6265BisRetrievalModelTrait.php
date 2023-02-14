@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Internal;
+namespace Souplette\Macaron\Internal;
 
-use ju1ius\Macaron\Cookie;
-use ju1ius\Macaron\Cookie\CookiePath;
-use ju1ius\Macaron\Cookie\Domain;
-use ju1ius\Macaron\Cookie\Retrieval;
-use ju1ius\Macaron\Cookie\SameSite;
-use ju1ius\Macaron\Http\HttpMethod;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
+use Souplette\Macaron\Cookie;
+use Souplette\Macaron\Cookie\CookiePath;
+use Souplette\Macaron\Cookie\Domain;
+use Souplette\Macaron\Cookie\Retrieval;
+use Souplette\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Http\HttpMethod;
 
 /**
  * @link https://httpwg.org/http-extensions/draft-ietf-httpbis-rfc6265bis.html#name-retrieval-algorithm

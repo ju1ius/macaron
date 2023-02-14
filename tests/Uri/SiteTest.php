@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace ju1ius\Macaron\Tests\Uri;
+namespace Souplette\Macaron\Tests\Uri;
 
-use ju1ius\Macaron\Exception\InvalidUriException;
-use ju1ius\Macaron\Uri\Site;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Souplette\Macaron\Exception\InvalidUriException;
+use Souplette\Macaron\Uri\Site;
 
 final class SiteTest extends TestCase
 {
