@@ -2,7 +2,6 @@
 
 namespace ju1ius\Macaron\Tests\Bridge\Symfony;
 
-use ju1ius\FusBup\PublicSuffixListInterface;
 use ju1ius\Macaron\Bridge\Symfony\MacaronHttpClient;
 use ju1ius\Macaron\Cookie;
 use ju1ius\Macaron\Cookie\ResponseCookie;
@@ -16,6 +15,7 @@ use Psr\Clock\ClockInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Souplette\FusBup\PublicSuffixListInterface;
 use Symfony\Component\Clock\MockClock;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;

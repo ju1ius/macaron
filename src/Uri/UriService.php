@@ -2,11 +2,11 @@
 
 namespace ju1ius\Macaron\Uri;
 
-use ju1ius\FusBup\Exception\IdnException;
-use ju1ius\FusBup\PublicSuffixList;
-use ju1ius\FusBup\PublicSuffixListInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
+use Souplette\FusBup\Exception\IdnException;
+use Souplette\FusBup\PublicSuffixList;
+use Souplette\FusBup\PublicSuffixListInterface;
 
 final class UriService implements UriFactoryInterface
 {
