@@ -47,10 +47,10 @@
     "ext-sqlite3": "*",
     "guzzlehttp/guzzle": "^7.5",
     "php-http/mock-client": "^1.5",
-    "symfony/clock": "^6.2",
+    "symfony/clock": "^6.2 || ^7.0",
     "symfony/http-client-contracts": "^3.2",
-    "symfony/http-client": "^6.0",
-    "symfony/stopwatch": "^6.2"
+    "symfony/http-client": "^6.0 || ^7.0",
+    "symfony/stopwatch": "^6.2 || ^7.0"
   },
   "suggest": {
     "ext-sqlite3": "To use the default persistent cookie storage implementation.",
