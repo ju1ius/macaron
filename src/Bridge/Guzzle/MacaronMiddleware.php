@@ -2,6 +2,7 @@
 
 namespace Souplette\Macaron\Bridge\Guzzle;
 
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -26,9 +27,14 @@ final class MacaronMiddleware
 
     public static function create(CookieJar $jar, UriService $uriService): callable
     {
-        return function($handler) use($jar, $uriService) {
-            return new self($jar, $uriService, $handler(...));
-        };
+        return fn(callable $handler) => new self($jar, $uriService, $handler(...));
+    }
+
+    public static function insert(HandlerStack $stack, CookieJar $jar, UriService $uriService): void
+    {
+        $middleware = self::create($jar, $uriService);
+        $stack->remove('cookies');
+        $stack->after('allow_redirects', $middleware, 'cookies');
     }
 
     public function __invoke(RequestInterface $request, array $options): PromiseInterface

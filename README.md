@@ -15,7 +15,6 @@ composer require souplette/macaron
 
 ## Usage
 
-Currently, the only available integration is for the `symfony/http-client` component.
-Integration with other PSR18-compatible clients is planned.
-
+Integrations for the following HTTP clients are currently available:
 * [symfony/http-client integration](docs/symfony.md)
+* [guzzle integration](docs/guzzle.md)
