@@ -1,16 +1,17 @@
 # Symfony HttpClient integration
 
-## Client instanciation
+## Client instantiation
 
-The `MacaronHttpClient` class decorates an existing `HttpClient` instance
+The `MacaronHttpClient` class decorates an existing symfony `HttpClient` instance
 to add RFC6265-bis compliant cookie management:
 
 ```php
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
-$macaron = new MacaronHttpClient($client);
+$macaron = new MacaronHttpClient($client, new UriService());
 ```
 
 As-is, the macaron client won't do anything more
@@ -20,9 +21,10 @@ you need to pass a cookie jar factory to the request "extra" options:
 
 ```php
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new MacaronHttpClient(HttpClient::create());
+$macaron = new MacaronHttpClient(HttpClient::create(), new UriService());
 $factory = ...; // see next chapter
 $macaron->request('GET', 'https://example.test', [
     'extra' => [
@@ -47,9 +49,10 @@ Passing an existing cookie jar allows sharing cookies between several requests:
 ```php
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Souplette\Macaron\CookieJar;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new MacaronHttpClient(HttpClient::create());
+$macaron = new MacaronHttpClient(HttpClient::create(), new UriService());
 $jar = new CookieJar();
 $macaron->request('GET', 'https://example.test', [
     'extra' => [
@@ -64,9 +67,10 @@ For the simplest use-cases, you can pass an array of scalars:
 
 ```php
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new MacaronHttpClient(HttpClient::create());
+$macaron = new MacaronHttpClient(HttpClient::create(), new UriService());
 $macaron->request('GET', 'https://www.example.test/foo/bar', [
     'extra' => [
         MacaronHttpClient::OPTION_KEY => [
@@ -91,9 +95,10 @@ you can pass an array of cookie objects:
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Souplette\Macaron\Cookie;
 use Souplette\Macaron\Cookie\SameSite;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new MacaronHttpClient(HttpClient::create());
+$macaron = new MacaronHttpClient(HttpClient::create(), new UriService());
 $macaron->request('GET', 'https://www.example.test/foo/bar', [
     'extra' => [
         MacaronHttpClient::OPTION_KEY => [
@@ -114,9 +119,10 @@ use Psr\Http\Message\UriInterface;
 use Souplette\Macaron\Bridge\Symfony\MacaronHttpClient;
 use Souplette\Macaron\CookieJar;
 use Souplette\Macaron\Http\HttpMethod;
+use Souplette\Macaron\Uri\UriService;
 use Symfony\Component\HttpClient\HttpClient;
 
-$macaron = new MacaronHttpClient(HttpClient::create());
+$macaron = new MacaronHttpClient(HttpClient::create(), new UriService());
 $factory = function(HttpMethod $method, UriInterface $uri, array $options): ?CookieJar {
     // return a CookieJar or null to disable cookie management
 };
